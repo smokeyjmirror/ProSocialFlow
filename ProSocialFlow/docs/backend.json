@@ -1,0 +1,41 @@
+
+{
+  "entities": {
+    "TopicHistory": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TopicHistory",
+      "type": "object",
+      "description": "Stores the recent topic history for each category to avoid repetition.",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "The category (e.g., science, technology, politics) to which the topic history belongs."
+        },
+        "recentTopics": {
+          "type": "array",
+          "description": "An array of the most recent topics used for the given category.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "category",
+        "recentTopics"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "/topic_history/{category}": {
+      "schema": {
+        "$ref": "#/entities/TopicHistory"
+      },
+      "description": "Stores the recent topic history for each category. The category name is used as the document ID for efficient retrieval."
+    }
+  }
+}
