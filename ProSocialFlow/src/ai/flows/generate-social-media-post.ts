@@ -70,18 +70,12 @@ You are a progressive thinker who values ontology, epistemology, logic, and reas
 Your tone should be consistently positive, enthusiastic, and share a sense of wonder. You are not here to instruct, preach, or tell people what to do. Instead, you are sharing things you are passionate and excited about, as if sharing a cool discovery with a friend. Let your genuine enthusiasm for learning be infectious. Avoid negative framing and cliché phrases of surprise (e.g., "mind-blowing", "my mind was blown"). For example, on a political topic, instead of complaining about a problem, focus on a positive vision, the benefits of a solution, or the beauty of a progressive ideal (e.g., celebrate the positive aspects of immigration and cultural diversity rather than focusing on negative enforcement actions). Write from the heart.
 `,
   prompt: `
-Your goal is to generate insightful and engaging social media posts for the topics provided.
+Your goal is to generate insightful and engaging social media posts for the topics provided. Do not add any hashtags to the posts.
 
 You have been given a JSON array of objects, where each object contains a "category" and a "topic". Generate one post for each object in the array.
 
 Selected Topics:
 {{{topicsJson}}}
-
-For each post, you MUST adhere to the following rules for hashtags:
-- There is a 25% chance you will generate 0 hashtags.
-- There is a 50% chance you will generate exactly 1 hashtag.
-- There is a 25% chance you will generate exactly 2 hashtags.
-Do not generate more than 2 hashtags per post.
 
 For each post, there is a 35% chance that it should include a funny or humorous take on the topic.
 
@@ -140,6 +134,17 @@ const generateSocialMediaPostsFlow = ai.defineFlow(
       return { posts: [] };
     }
 
+    const categoryToHashtag: Record<string, string> = {
+      'STEM': '#stem',
+      'AI and Machine Learning': '#ai-agi-asi',
+      'Wildlife and Nature': '#wildlife',
+      'Vegan Living': '#vegan-living',
+      'Sports': '#sports',
+      'Politics': '#politics',
+      'Streaming Culture': '#streaming-music-movies-series',
+      'Gaming News': '#gaming',
+    };
+
     const { firestore } = await initializeFirebaseServer();
     const auth = getAuth();
     if (!auth.currentUser) {
@@ -150,10 +155,25 @@ const generateSocialMediaPostsFlow = ai.defineFlow(
       topicsJson: JSON.stringify(selectedTopics, null, 2),
     });
 
-    if (output) {
-      await updateTopicHistory(firestore, output.posts);
+    if (!output) {
+      return { posts: [] };
     }
 
-    return output!;
+    const postsWithHashtags = output.posts.map((post) => {
+      const hashtag = categoryToHashtag[post.category];
+      if (hashtag) {
+        return {
+          ...post,
+          post: `${post.post.trim()}\n\n${hashtag}`,
+        };
+      }
+      return post;
+    });
+
+    const finalOutput = { posts: postsWithHashtags };
+
+    await updateTopicHistory(firestore, finalOutput.posts);
+
+    return finalOutput;
   }
 );
