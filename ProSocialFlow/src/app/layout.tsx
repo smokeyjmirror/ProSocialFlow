@@ -1,12 +1,11 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
 export const metadata: Metadata = {
-  title: 'ProSocialFlow',
-  description: 'Generate progressive social media posts for Bluesky and Discord.',
+  title: 'ProSocialFlow: Daily TIL Fact Curator',
+  description: 'Curate and generate fascinating Today I Learned facts for your Discord community.',
 };
 
 export default function RootLayout({
