@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -36,8 +35,8 @@ export default function PostCard({
   };
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="flex flex-row items-start justify-between bg-card-foreground/5 p-4 gap-4">
+    <Card className="overflow-hidden border-primary/20">
+      <CardHeader className="flex flex-row items-start justify-between bg-primary/5 p-4 gap-4">
         <div className="flex flex-col gap-2">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Badge variant="secondary" className="pl-2">
@@ -50,7 +49,7 @@ export default function PostCard({
             </Badge>
           </CardTitle>
           <p className="text-sm text-muted-foreground font-normal leading-snug">
-            <span className="font-semibold">Topic:</span> {post.topic}
+            <span className="font-semibold">Subject:</span> {post.topic}
           </p>
         </div>
         <Button
@@ -60,16 +59,17 @@ export default function PostCard({
           onClick={() => onDelete(post.id)}
         >
           <Trash2 className="h-4 w-4" />
-          <span className="sr-only">Delete post</span>
+          <span className="sr-only">Delete entry</span>
         </Button>
       </CardHeader>
-      <CardContent className="p-6 pt-0">
+      <CardContent className="p-6 pt-4">
         <div className="space-y-3">
+          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Today I Learned:</label>
           <Textarea
             value={post.post}
             onChange={e => onUpdate(post.id, { post: e.target.value })}
-            className="h-48 resize-none"
-            aria-label="Post content"
+            className="h-48 resize-none bg-muted/20"
+            aria-label="TIL content"
           />
           <div className="flex flex-wrap gap-2">
             <Button
@@ -82,7 +82,7 @@ export default function PostCard({
               ) : (
                 <Copy className="mr-2 h-4 w-4" />
               )}
-              {copied ? 'Copied' : 'Copy Post'}
+              {copied ? 'Copied' : 'Copy Learning Entry'}
             </Button>
           </div>
         </div>
