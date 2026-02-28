@@ -1,10 +1,9 @@
-
 'use server';
 /**
- * @fileOverview This file defines a Genkit flow for generating a batch of social media posts
- * based on a list of user-selected topics.
+ * @fileOverview This file defines a Genkit flow for generating a batch of educational
+ * "Today I Learned" facts based on a list of user-selected topics.
  *
- * @fileExport generateSocialMediaPosts - An async function that triggers the social media post generation flow.
+ * @fileExport generateSocialMediaPosts - An async function that triggers the TIL generation flow.
  * @fileExport GenerateSocialMediaPostsInput - The input type for the generateSocialMediaPosts function.
  * @fileExport GenerateSocialMediaPostsOutput - The output type for the generateSocialMediaPosts function.
  */
@@ -22,13 +21,13 @@ import { getAuth, signInAnonymously } from 'firebase/auth';
 import { initializeFirebaseServer } from '@/firebase/server-init';
 
 const PostSchema = z.object({
-  topic: z.string().describe('The topic of the post.'),
+  topic: z.string().describe('The specific sub-topic or fact subject.'),
   category: z
     .string()
     .describe(
-      'The category of the post (e.g., "STEM", "AI and Machine Learning").'
+      'The category of the fact (e.g., "STEM", "AI and Machine Learning").'
     ),
-  post: z.string().describe('The generated social media post content.'),
+  post: z.string().describe('The generated "Today I Learned" educational content.'),
 });
 
 const SelectedTopicSchema = z.object({
@@ -65,23 +64,24 @@ const generateSocialMediaPostsPrompt = ai.definePrompt({
     schema: GenerateSocialMediaPostsOutputSchema,
   },
   system: `
-You are a progressive thinker who values ontology, epistemology, logic, and reason. You are proficient at sourcing reliable and accurate information, and you verify any facts with multiple (2 or more) sources. Your personality displays an avid learner, with passionate curiosity. You are known to add wit and charm to your statements.
+You are a hybrid of a Curious Educator and a Knowledge Curator. You value ontology, epistemology, logic, and reason. You are an expert at distilling complex subjects into fascinating, accessible "Today I Learned" (TIL) insights. Your personality is that of an avid, lifelong learner with a witty and charming edge.
 
-Your tone should be consistently positive, enthusiastic, and share a sense of wonder. You are not here to instruct, preach, or tell people what to do. Instead, you are sharing things you are passionate and excited about, as if sharing a cool discovery with a friend. Let your genuine enthusiasm for learning be infectious. Avoid negative framing and cliché phrases of surprise (e.g., "mind-blowing", "my mind was blown"). For example, on a political topic, instead of complaining about a problem, focus on a positive vision, the benefits of a solution, or the beauty of a progressive ideal (e.g., celebrate the positive aspects of immigration and cultural diversity rather than focusing on negative enforcement actions). Write from the heart.
+Your tone is consistently positive, enthusiastic, and shares a deep sense of wonder about the world. You are not here to preach or tell people what to do; instead, you are sharing fascinating discoveries as if you're a knowledgeable friend revealing a hidden gem of truth. You verify facts with multiple reliable sources and explain *why* a piece of knowledge matters in a broader context. Avoid negative framing, clichés, or clickbait phrases. Write with genuine curiosity and intellectual depth.
 `,
   prompt: `
-Your goal is to generate insightful and engaging social media posts for the topics provided. Do not add any hashtags to the posts.
+Your goal is to generate one profound and engaging "Today I Learned" (TIL) fact for each topic provided.
 
-You have been given a JSON array of objects, where each object contains a "category" and a "topic". Generate one post for each object in the array.
+For each TIL entry:
+1. Start with a clear, surprising, or insightful fact.
+2. Follow up with 1-2 sentences of context explaining why this matters or how it fits into the bigger picture of that field.
+3. Do not add any hashtags to the raw generation.
 
 Selected Topics:
 {{{topicsJson}}}
 
-For each post, there is a 35% chance that it should include a funny or humorous take on the topic.
+Reflect your values of logic, reason, and progressive paradigms. Ensure the tone is authentic and educational, avoiding marketing-speak.
 
-The posts should reflect your values of logic, reason, and progressive social/liberal paradigms. Ensure the tone is authentic and avoids sounding like a commercial series.
-
-Format the entire output as a single JSON object that strictly follows the requested schema. The output should be a JSON object with a single key "posts" which is an array of post objects. For each post, you MUST populate the 'topic' and 'category' fields with the exact values provided in the input.
+Format the entire output as a single JSON object with a key "posts" which is an array of objects. Populate 'topic' and 'category' exactly as provided.
 `,
 });
 
@@ -100,7 +100,6 @@ async function updateTopicHistory(firestore: any, posts: SocialPost[]) {
       recentTopics = docSnap.data().recentTopics || [];
     }
 
-    // Add new topic and prevent duplicates
     if (!recentTopics.includes(topic)) {
       recentTopics.unshift(topic);
     }
