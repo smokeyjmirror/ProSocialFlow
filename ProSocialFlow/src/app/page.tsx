@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useCallback, useTransition, useMemo } from 'react';
@@ -139,7 +138,7 @@ export default function Home() {
         toast({
             variant: 'destructive',
             title: 'No Topics Selected',
-            description: 'Please lock in at least one topic idea before generating posts.',
+            description: 'Please lock in at least one TIL topic before generating facts.',
         });
         return;
     }
@@ -234,111 +233,6 @@ export default function Home() {
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lightbulb />
-                Step 1: Generate Topic Ideas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <p className="text-muted-foreground">
-                  Generate initial topic ideas for all categories, or regenerate specific ones.
-                </p>
-                <Button
-                  onClick={handleGenerateIdeas}
-                  disabled={isGeneratingIdeas}
-                  className="w-full sm:w-auto"
-                >
-                  {isGeneratingIdeas ? (
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                  ) : (
-                    <Lightbulb className="mr-2 h-4 w-4" />
-                  )}
-                  Generate All Ideas
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wand2 />
-                  Step 2: Select Topics & Generate Posts
-                </CardTitle>
-                <CardDescription>
-                  Lock in your chosen topics using the checkboxes, then generate posts.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
-                        {CATEGORIES.map(category => (
-                            <div key={category} className="space-y-3">
-                                <label className="font-medium text-sm flex items-center gap-2">
-                                    <span className="flex items-center gap-1.5 [&>svg]:w-4 [&>svg]:h-4 [&>svg]:stroke-current text-primary">
-                                        {getTopicIcon(category)}
-                                    </span>
-                                    {category}
-                                </label>
-                                {(isGeneratingAll && !lockedIdeas[category]) || generatingIdea === category ? (
-                                    <div className="h-24 w-full rounded-md bg-muted animate-pulse" />
-                                ) : ideas[category] ? (
-                                    <div className="flex items-start space-x-2 p-2 rounded-md border border-input min-h-[100px]">
-                                         <Checkbox
-                                            id={`lock-${category}`}
-                                            checked={lockedIdeas[category] || false}
-                                            onCheckedChange={(checked) => handleLockIdea(category, !!checked)}
-                                            aria-label={`Lock idea for ${category}`}
-                                            className="mt-1"
-                                          />
-                                        <div className="flex-1 space-y-2">
-                                            <Label htmlFor={`lock-${category}`} className="text-sm font-normal cursor-pointer leading-tight">
-                                            {ideas[category]}
-                                            </Label>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="h-6 px-2 text-xs"
-                                                onClick={() => handleGenerateSingleIdea(category)}
-                                                disabled={isGeneratingIdeas || lockedIdeas[category]}
-                                            >
-                                                <RefreshCw className={`mr-1.5 h-3 w-3 ${generatingIdea === category ? 'animate-spin' : ''}`} />
-                                                Generate New Idea
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                  <div className="flex items-center justify-center text-sm text-muted-foreground p-2 rounded-md border border-dashed min-h-10">
-                                    Click "Generate Ideas"
-                                  </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                      <Button
-                        onClick={handleGeneratePosts}
-                        disabled={isGeneratingPosts || !canGeneratePosts}
-                        className="w-full sm:w-auto"
-                    >
-                        {isGeneratingPosts ? (
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                            <Wand2 className="mr-2 h-4 w-4" />
-                        )}
-                        Generate Posts from Selected Topics
-                    </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-          <PostQueue
-            posts={generatedPosts}
-            onDelete={handleDeletePost}
-            onUpdate={handleUpdatePost}
-          />
 
           <Card>
             <CardHeader>
@@ -418,13 +312,119 @@ export default function Home() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
+                <Lightbulb />
+                Step 1: Curate TIL Topics
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
+                  Brainstorm specific "Today I Learned" topics for all categories.
+                </p>
+                <Button
+                  onClick={handleGenerateIdeas}
+                  disabled={isGeneratingIdeas}
+                  className="w-full sm:w-auto"
+                >
+                  {isGeneratingIdeas ? (
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Lightbulb className="mr-2 h-4 w-4" />
+                  )}
+                  Brainstorm All Topics
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wand2 />
+                  Step 2: Generate Knowledge Facts
+                </CardTitle>
+                <CardDescription>
+                  Lock in the topics you want to learn about today, then generate the full facts.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
+                        {CATEGORIES.map(category => (
+                            <div key={category} className="space-y-3">
+                                <label className="font-medium text-sm flex items-center gap-2">
+                                    <span className="flex items-center gap-1.5 [&>svg]:w-4 [&>svg]:h-4 [&>svg]:stroke-current text-primary">
+                                        {getTopicIcon(category)}
+                                    </span>
+                                    {category}
+                                </label>
+                                {(isGeneratingAll && !lockedIdeas[category]) || generatingIdea === category ? (
+                                    <div className="h-24 w-full rounded-md bg-muted animate-pulse" />
+                                ) : ideas[category] ? (
+                                    <div className="flex items-start space-x-2 p-2 rounded-md border border-input min-h-[100px]">
+                                         <Checkbox
+                                            id={`lock-${category}`}
+                                            checked={lockedIdeas[category] || false}
+                                            onCheckedChange={(checked) => handleLockIdea(category, !!checked)}
+                                            aria-label={`Lock idea for ${category}`}
+                                            className="mt-1"
+                                          />
+                                        <div className="flex-1 space-y-2">
+                                            <Label htmlFor={`lock-${category}`} className="text-sm font-normal cursor-pointer leading-tight">
+                                            {ideas[category]}
+                                            </Label>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="h-6 px-2 text-xs"
+                                                onClick={() => handleGenerateSingleIdea(category)}
+                                                disabled={isGeneratingIdeas || lockedIdeas[category]}
+                                            >
+                                                <RefreshCw className={`mr-1.5 h-3 w-3 ${generatingIdea === category ? 'animate-spin' : ''}`} />
+                                                New Topic
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                  <div className="flex items-center justify-center text-sm text-muted-foreground p-2 rounded-md border border-dashed min-h-10">
+                                    Click "Brainstorm Topics"
+                                  </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                      <Button
+                        onClick={handleGeneratePosts}
+                        disabled={isGeneratingPosts || !canGeneratePosts}
+                        className="w-full sm:w-auto"
+                    >
+                        {isGeneratingPosts ? (
+                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Wand2 className="mr-2 h-4 w-4" />
+                        )}
+                        Generate TIL Facts from Selection
+                    </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+          <PostQueue
+            posts={generatedPosts}
+            onDelete={handleDeletePost}
+            onUpdate={handleUpdatePost}
+          />
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
                 <History />
-                Firestore Topic History
+                Learning History
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                View the list of recently used topics that the AI avoids duplicating. This history is stored in Firestore.
+                View recently learned topics stored in Firestore. The AI avoids repeating these.
               </p>
               <Button
                 onClick={handleFetchHistory}
@@ -470,4 +470,3 @@ export default function Home() {
     </div>
   );
 }
-
