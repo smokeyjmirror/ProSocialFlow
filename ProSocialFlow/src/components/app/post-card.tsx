@@ -49,7 +49,7 @@ export default function PostCard({
             </Badge>
           </CardTitle>
           <p className="text-sm text-muted-foreground font-normal leading-snug">
-            <span className="font-semibold">Subject:</span> {post.topic}
+            <span className="font-semibold">Focus:</span> {post.topic}
           </p>
         </div>
         <Button
@@ -64,12 +64,12 @@ export default function PostCard({
       </CardHeader>
       <CardContent className="p-6 pt-4">
         <div className="space-y-3">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Today I Learned:</label>
+          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Intelligence Briefing:</label>
           <Textarea
             value={post.post}
             onChange={e => onUpdate(post.id, { post: e.target.value })}
-            className="h-48 resize-none bg-muted/20"
-            aria-label="TIL content"
+            className="h-64 resize-none bg-muted/20"
+            aria-label="Report content"
           />
           <div className="flex flex-wrap gap-2">
             <Button
@@ -82,7 +82,7 @@ export default function PostCard({
               ) : (
                 <Copy className="mr-2 h-4 w-4" />
               )}
-              {copied ? 'Copied' : 'Copy Learning Entry'}
+              {copied ? 'Copied' : 'Copy Briefing'}
             </Button>
           </div>
         </div>
