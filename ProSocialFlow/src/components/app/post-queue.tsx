@@ -15,7 +15,7 @@ export default function PostQueue({
 }: PostQueueProps) {
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold font-headline">Learning Queue</h2>
+      <h2 className="text-2xl font-bold font-headline">Intelligence Queue</h2>
       {posts.length > 0 ? (
         <div className="space-y-4">
           {posts.map((post) => (
@@ -30,8 +30,8 @@ export default function PostQueue({
       ) : (
         <div className="flex flex-col items-center justify-center text-center text-muted-foreground border-2 border-dashed border-border rounded-lg p-12">
           <BookOpen className="h-12 w-12 mb-4" />
-          <h3 className="text-lg font-semibold">Your curriculum is empty</h3>
-          <p>Generate a TIL fact to get started.</p>
+          <h3 className="text-lg font-semibold">Your queue is empty</h3>
+          <p>Generate a weekly report to get started.</p>
         </div>
       )}
     </div>
