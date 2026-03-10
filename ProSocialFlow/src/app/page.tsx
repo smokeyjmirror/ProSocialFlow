@@ -85,13 +85,13 @@ export default function Home() {
 
       if (categoriesToGenerate.length === 0) {
         toast({
-          title: 'All ideas are locked',
-          description: 'Unlock some ideas if you want to generate new ones.',
+          title: 'All subjects are locked',
+          description: 'Unlock some subjects if you want to brainstorm new focuses.',
         });
         return;
       }
       
-      setGeneratingIdea('__all__'); // Use a special key for "all"
+      setGeneratingIdea('__all__');
       const result = await generateIdeasAction(categoriesToGenerate);
       setGeneratingIdea(null);
       
@@ -100,7 +100,7 @@ export default function Home() {
       } else {
         toast({
           variant: 'destructive',
-          title: 'Idea Generation Failed',
+          title: 'Brainstorming Failed',
           description: result.error,
         });
       }
@@ -117,7 +117,7 @@ export default function Home() {
       } else {
         toast({
           variant: 'destructive',
-          title: 'Idea Generation Failed',
+          title: 'Brainstorming Failed',
           description: result.error,
         });
       }
@@ -138,7 +138,7 @@ export default function Home() {
         toast({
             variant: 'destructive',
             title: 'No Topics Selected',
-            description: 'Please lock in at least one TIL topic before generating facts.',
+            description: 'Please lock in at least one focus topic before generating reports.',
         });
         return;
     }
@@ -152,13 +152,13 @@ export default function Home() {
           id: crypto.randomUUID(),
         }));
         setGeneratedPosts((prevPosts) => [...newPosts, ...prevPosts]);
-        setTopicHistory(null); // Clear history so user can re-fetch
-        setIdeas({}); // Clear ideas after generating
-        setLockedIdeas({}); // Clear selections
+        setTopicHistory(null);
+        setIdeas({});
+        setLockedIdeas({});
       } else {
         toast({
           variant: 'destructive',
-          title: 'Generation Failed',
+          title: 'Report Generation Failed',
           description: result.error,
         });
       }
@@ -313,13 +313,13 @@ export default function Home() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb />
-                Step 1: Curate TIL Topics
+                Step 1: Brainstorm Weekly Focus
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 <p className="text-muted-foreground">
-                  Brainstorm specific "Today I Learned" topics for all categories.
+                  Decide what specific topics to investigate for this week's intelligence reports.
                 </p>
                 <Button
                   onClick={handleGenerateIdeas}
@@ -331,7 +331,7 @@ export default function Home() {
                   ) : (
                     <Lightbulb className="mr-2 h-4 w-4" />
                   )}
-                  Brainstorm All Topics
+                  Brainstorm All Subject Focuses
                 </Button>
               </div>
             </CardContent>
@@ -341,10 +341,10 @@ export default function Home() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Wand2 />
-                  Step 2: Generate Knowledge Facts
+                  Step 2: Generate Intelligence Briefings
                 </CardTitle>
                 <CardDescription>
-                  Lock in the topics you want to learn about today, then generate the full facts.
+                  Lock in the topics you want to deep-dive on, then generate robust reports.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -366,7 +366,7 @@ export default function Home() {
                                             id={`lock-${category}`}
                                             checked={lockedIdeas[category] || false}
                                             onCheckedChange={(checked) => handleLockIdea(category, !!checked)}
-                                            aria-label={`Lock idea for ${category}`}
+                                            aria-label={`Lock focus for ${category}`}
                                             className="mt-1"
                                           />
                                         <div className="flex-1 space-y-2">
@@ -381,13 +381,13 @@ export default function Home() {
                                                 disabled={isGeneratingIdeas || lockedIdeas[category]}
                                             >
                                                 <RefreshCw className={`mr-1.5 h-3 w-3 ${generatingIdea === category ? 'animate-spin' : ''}`} />
-                                                New Topic
+                                                New Focus
                                             </Button>
                                         </div>
                                     </div>
                                 ) : (
                                   <div className="flex items-center justify-center text-sm text-muted-foreground p-2 rounded-md border border-dashed min-h-10">
-                                    Click "Brainstorm Topics"
+                                    Click "Brainstorm Subjects"
                                   </div>
                                 )}
                             </div>
@@ -403,7 +403,7 @@ export default function Home() {
                         ) : (
                             <Wand2 className="mr-2 h-4 w-4" />
                         )}
-                        Generate TIL Facts from Selection
+                        Generate Intelligence Briefings
                     </Button>
                 </div>
               </CardContent>
@@ -419,12 +419,12 @@ export default function Home() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <History />
-                Learning History
+                Briefing History
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4">
-                View recently learned topics stored in Firestore. The AI avoids repeating these.
+                View previous intelligence focus topics. The AI uses this to avoid repetition.
               </p>
               <Button
                 onClick={handleFetchHistory}
